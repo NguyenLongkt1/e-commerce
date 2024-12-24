@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -20,9 +22,11 @@ public class BaseEntity implements Serializable {
     @Column(name="id")
     private Long id;
 
+    @CreatedDate
     @Column(name="created_date")
     private LocalDateTime createdDate;
 
+    @LastModifiedDate
     @Column(name="updated_date")
     private LocalDateTime updatedDate;
 
