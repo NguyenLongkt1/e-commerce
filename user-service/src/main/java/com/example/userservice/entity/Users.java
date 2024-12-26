@@ -31,7 +31,7 @@ public class Users extends BaseEntity {
     @Column(name="password",columnDefinition = "VARCHAR(500)")
     private String password;
 
-    @Column(name="status",columnDefinition = "NUMBER")
+    @Column(name="status",columnDefinition = "INT(1)")
     private Integer status;
 
 }
