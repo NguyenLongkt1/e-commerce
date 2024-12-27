@@ -6,4 +6,5 @@ import com.example.userservice.entity.Users;
 
 public interface IUsersCommandService extends ICommandService<Users> {
     Users doCreateUser(UsersDTO dto);
+    Users findByUsername(String username);
 }
