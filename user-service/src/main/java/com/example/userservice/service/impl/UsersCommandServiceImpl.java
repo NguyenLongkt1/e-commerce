@@ -42,4 +42,9 @@ public class UsersCommandServiceImpl implements IUsersCommandService {
         Users user = modelMapper.map(dto,Users.class);
         return create(user);
     }
+
+    @Override
+    public Users findByUsername(String username) {
+        return usersRepository.findByUserName(username).orElse(null);
+    }
 }
