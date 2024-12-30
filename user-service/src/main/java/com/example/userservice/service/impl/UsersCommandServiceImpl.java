@@ -6,6 +6,8 @@ import com.example.userservice.repository.UsersRepository;
 import com.example.userservice.service.IUsersCommandService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -40,6 +42,13 @@ public class UsersCommandServiceImpl implements IUsersCommandService {
     @Override
     public Users doCreateUser(UsersDTO dto) {
         Users user = modelMapper.map(dto,Users.class);
+
+        if (findByUsername(dto.getUserName()) != null) {
+            throw new RuntimeException("User already existed");
+        }
+
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        user.setPassword(passwordEncoder.encode(dto.getPassword()));
         return create(user);
     }
 

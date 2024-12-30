@@ -10,59 +10,33 @@ import com.example.apigateway.dto.response.UsersDTO;
 //import com.nimbusds.jose.crypto.MACVerifier;
 //import com.nimbusds.jwt.JWTClaimsSet;
 //import com.nimbusds.jwt.SignedJWT;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.security.Key;
 import java.text.ParseException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.Date;
-import java.util.StringJoiner;
-import java.util.UUID;
+import java.util.*;
+
 //
 //;
 //
-//@Service
+@Service
 public class AuthenticationService {
 //
-//    @Value("${jwt.signerKey}")
-//    protected String SIGNER_KEY;
-//
-//    private SignedJWT verifyToken(String token) throws JOSEException, ParseException {
-//        JWSVerifier verifier = new MACVerifier(SIGNER_KEY.getBytes());
-//
-//        SignedJWT signedJWT = SignedJWT.parse(token);
-//
-//        Date expiryTime = signedJWT.getJWTClaimsSet().getExpirationTime();
-//
-//        var verified = signedJWT.verify(verifier);
-//
-//        if (!(verified && expiryTime.after(new Date()))) {
-//            throw new RuntimeException("Invalid JWT");
-//        }
-//
-////        if (invalidatedTokenRepository.existsById(signedJWT.getJWTClaimsSet().getJWTID()))
-////            return null;
-//
-//        return signedJWT;
-//    }
-//
-//    public IntrospectResponse introspect(IntrospectRequest request)
-//            throws JOSEException, ParseException {
-//        var token = request.getToken();
-//        boolean isValid = true;
-//        try {
-//            verifyToken(token);
-//        } catch (RuntimeException e) {
-//            e.printStackTrace();
-//            isValid = false;
-//        }
-//        return new IntrospectResponse(isValid);
-//    }
-//
+    @Value("${jwt.signerKey}")
+    protected String SIGNER_KEY;
+
+    private static final long tokenExpTime = 60 * 60 * 1000; // 1 hour
+
     public AuthenticationResponse authenticate(AuthenticationRequest request){
         var user = mockGetUser();
 
@@ -72,36 +46,31 @@ public class AuthenticationService {
         if (!authenticated)
             throw new RuntimeException("Invalid password");
 
-        var token = "generateToken(user)";
-//
+        var token = generateToken(request.getUsername(), tokenExpTime);
         return new AuthenticationResponse(token, true);
     }
-//
-//    private String generateToken(UsersDTO user) {
-//        JWSHeader header = new JWSHeader(JWSAlgorithm.HS512);
-//
-//        JWTClaimsSet jwtClaimsSet = new JWTClaimsSet.Builder()
-//                .subject(user.getUserName())
-//                .issuer("devteria")
-//                .issueTime(new Date())
-//                .expirationTime(new Date(Instant.now().plus(1, ChronoUnit.HOURS).toEpochMilli()))
-//                .jwtID(UUID.randomUUID().toString())
-////                .claim("scope", buildScope(user))
-//                .build();
-//        Payload payload = new Payload(jwtClaimsSet.toJSONObject());
-//
-//        JWSObject jwsObject = new JWSObject(header, payload);
-//
-//        //Kí token
-//        try {
-//            jwsObject.sign(new MACSigner(SIGNER_KEY.getBytes()));
-//            return jwsObject.serialize();
-//        } catch (JOSEException e) {
-//            System.out.println("Cannot create token " + e);
-//            throw new RuntimeException(e);
-//        }
-//    }
-//
+
+    public String generateToken(String userName, Long expTime) {
+        Map<String, Object> claims = new HashMap<>();
+        return createToken(claims, userName, expTime);
+    }
+
+    private String createToken(Map<String, Object> claims, String username, Long expTime) {
+        return Jwts.builder()
+                .setClaims(claims)
+                .setSubject(username)
+                .setIssuer("api-gateway")
+                .setIssuedAt(new Date())
+                .setId(UUID.randomUUID().toString())
+                .setExpiration(new Date(System.currentTimeMillis() + expTime))
+                .signWith(getSignKey(), SignatureAlgorithm.HS256).compact();
+    }
+
+    private Key getSignKey() {
+        byte[] keyBytes = Decoders.BASE64.decode(SIGNER_KEY);
+        return Keys.hmacShaKeyFor(keyBytes);
+    }
+
 ////    private String buildScope(UsersDTO user){
 ////        StringJoiner stringJoiner = new StringJoiner(" ");
 ////        if (!CollectionUtils.isEmpty(user.getRoles()))
@@ -112,7 +81,7 @@ public class AuthenticationService {
     UsersDTO mockGetUser() {
         UsersDTO usersDTO = new UsersDTO();
         usersDTO.setUserName("anhtht");
-        usersDTO.setPassword("anhtht");
+        usersDTO.setPassword("$2a$10$Q9TC0nJ5oCLr5JemEi593e07X.F.mJTGtNpcEHboWccDtOl6o3juu");
         return usersDTO;
     }
 }
