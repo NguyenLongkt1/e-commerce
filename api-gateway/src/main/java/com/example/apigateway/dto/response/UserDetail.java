@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @NoArgsConstructor
@@ -16,11 +17,11 @@ import java.util.List;
 public class UserDetail implements UserDetails {
 
     private String username;
-    private List<SimpleGrantedAuthority> authorities;
+    private Set<String> roles;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"));
+        return roles.stream().map(item -> new SimpleGrantedAuthority("ROLE_" + item)).toList();
     }
 
     @Override

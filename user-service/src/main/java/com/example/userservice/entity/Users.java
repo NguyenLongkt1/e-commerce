@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 
+import java.util.Set;
+
 @Table(name="users",schema = "user-service")
 @Entity
 @Builder
@@ -33,6 +35,8 @@ public class Users extends BaseEntity {
 
     @Column(name="status",columnDefinition = "INT(1)")
     private Integer status;
+
+    private Set<String> roles;
 
     public String getUsername() {
         return username;
@@ -88,5 +92,13 @@ public class Users extends BaseEntity {
 
     public void setStatus(Integer status) {
         this.status = status;
+    }
+
+    public Set<String> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<String> roles) {
+        this.roles = roles;
     }
 }

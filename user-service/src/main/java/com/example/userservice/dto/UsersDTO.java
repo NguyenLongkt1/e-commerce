@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Data
 @Builder
@@ -20,6 +21,7 @@ public class UsersDTO {
     private LocalDateTime updatedDate;
     private Long createdBy;
     private Long updateBy;
+    private Set<String> roles;
 
     public Long getId() {
         return id;
@@ -115,5 +117,13 @@ public class UsersDTO {
 
     public void setUpdateBy(Long updateBy) {
         this.updateBy = updateBy;
+    }
+
+    public Set<String> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<String> roles) {
+        this.roles = roles;
     }
 }
