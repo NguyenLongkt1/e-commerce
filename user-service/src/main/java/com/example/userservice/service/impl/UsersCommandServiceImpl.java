@@ -54,6 +54,6 @@ public class UsersCommandServiceImpl implements IUsersCommandService {
 
     @Override
     public Users findByUsername(String username) {
-        return usersRepository.findByUserName(username).orElse(null);
+        return usersRepository.findByUsername(username).orElse(null);
     }
 }

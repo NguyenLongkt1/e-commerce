@@ -27,7 +27,7 @@ public class UsersCommandController {
     }
 
     @GetMapping("/find-by-username")
-    public ResponseEntity<Users> findUserByUserName(@RequestParam String userName){
-        return ResponseEntity.ok(usersCommandService.findByUsername(userName));
+    public ResponseEntity<Users> findUserByUserName(@RequestParam String username){
+        return ResponseEntity.ok(usersCommandService.findByUsername(username));
     }
 }
