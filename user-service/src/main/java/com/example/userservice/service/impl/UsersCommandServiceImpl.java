@@ -43,7 +43,7 @@ public class UsersCommandServiceImpl implements IUsersCommandService {
     public Users doCreateUser(UsersDTO dto) {
         Users user = modelMapper.map(dto,Users.class);
 
-        if (findByUsername(dto.getUserName()) != null) {
+        if (findByUsername(dto.getUsername()) != null) {
             throw new RuntimeException("User already existed");
         }
 
