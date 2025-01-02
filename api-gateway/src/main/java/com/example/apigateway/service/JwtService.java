@@ -1,10 +1,12 @@
 package com.example.apigateway.service;
 
+import com.example.apigateway.repository.InvalidatedTokenRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
@@ -13,6 +15,7 @@ import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.function.Function;
 
 @Component
@@ -21,12 +24,19 @@ public class JwtService {
     @Value("${jwt.signerKey}")
     private String SIGNER_KEY;
 
+    @Autowired
+    private InvalidatedTokenRepository invalidatedTokenRepository;
+
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
     }
 
     public Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
+    }
+
+    public String extractJwtId(String token) {
+        return extractClaim(token, Claims::getId);
     }
 
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
@@ -48,6 +58,9 @@ public class JwtService {
     }
 
     public Boolean validateToken(String token, UserDetails userDetails) {
+        if (invalidatedTokenRepository.existsById(extractJwtId(token)))
+            throw new RuntimeException("Invalid token");
+
         final String username = extractUsername(token);
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
@@ -62,7 +75,9 @@ public class JwtService {
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(username)
-                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setIssuer("api-gateway")
+                .setIssuedAt(new Date())
+                .setId(UUID.randomUUID().toString())
                 .setExpiration(new Date(System.currentTimeMillis() + expTime))
                 .signWith(getSignKey(), SignatureAlgorithm.HS256).compact();
     }

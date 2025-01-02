@@ -61,6 +61,7 @@ public class SecurityConfig {
         http.addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class);
         http.authorizeHttpRequests(request ->
                 request.requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/auth/logout").permitAll()
                         .requestMatchers(HttpMethod.POST, "/users/command/users").permitAll()
                         .requestMatchers(HttpMethod.GET, "/users/command/users/**").hasRole("ADMIN")
                         .anyRequest().authenticated());

@@ -1,6 +1,7 @@
 package com.example.apigateway.controller;
 
 import com.example.apigateway.dto.request.AuthenticationRequest;
+import com.example.apigateway.dto.request.LogoutRequest;
 import com.example.apigateway.dto.response.AuthenticationResponse;
 import com.example.apigateway.service.AuthenticationService;
 import lombok.AccessLevel;
@@ -25,9 +26,9 @@ public class AuthenticationController {
         return ResponseEntity.ok(result);
     }
 
-//    @PostMapping("/logout")
-//    ApiResponse<Void> logout(@RequestBody LogoutRequest request) throws ParseException, JOSEException {
-//        authenticationService.logout(request);
-//        return ApiResponse.<Void>builder().build();
-//    }
+    @PostMapping("/logout")
+    ResponseEntity<Void> logout(@RequestBody LogoutRequest request) {
+        authenticationService.logout(request);
+        return ResponseEntity.ok().build();
+    }
 }

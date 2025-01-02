@@ -29,7 +29,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         String requestURI = request.getRequestURI();
 
         // Kiểm tra xem yêu cầu cần xác thực hay không
-        if (requestURI.equals("/auth/login") || requestURI.equals("/users/command/users")) {
+        if (requestURI.equals("/auth/login") || requestURI.equals("/users/command/users") || requestURI.equals("/auth/logout")) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -37,50 +37,50 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         String authHeader = request.getHeader("Authorization");
         String username;
         String jwtToken;
+        try {
+            if (authHeader != null && authHeader.startsWith("Bearer ")) {
+                jwtToken = authHeader.substring(7);
 
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            jwtToken = authHeader.substring(7);
-            try {
                 username = jwtService.extractUsername(jwtToken);
-            } catch (ExpiredJwtException e) {
-                // Handle expired token
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                response.setContentType("application/json; charset=UTF-8");
-                response.setCharacterEncoding("UTF-8");
-                response.getWriter().write("{\"error\": \"Token has been expired\"}");
-                return;
-            } catch (Exception e) {
-                // Handle other token validation errors
+
+            } else {
+                // Handle missing or invalid Authorization header
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 response.setContentType("application/json; charset=UTF-8");
                 response.setCharacterEncoding("UTF-8");
                 response.getWriter().write("{\"error\": \"Invalid token\"}");
                 return;
             }
-        } else {
-            // Handle missing or invalid Authorization header
+
+            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                if (userDetails == null) {
+                    response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                    response.setContentType("application/json; charset=UTF-8");
+                    response.setCharacterEncoding("UTF-8");
+                    response.getWriter().write("{\"error\": \"User not found\"}");
+                    return;
+                }
+                if (jwtService.validateToken(jwtToken, userDetails)) {
+                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authToken);
+                }
+            }
+            filterChain.doFilter(request, response);
+        } catch (ExpiredJwtException e) {
+            // Handle expired token
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType("application/json; charset=UTF-8");
+            response.setCharacterEncoding("UTF-8");
+            response.getWriter().write("{\"error\": \"Token has been expired\"}");
+        } catch (Exception e) {
+            // Handle other token validation errors
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.setContentType("application/json; charset=UTF-8");
             response.setCharacterEncoding("UTF-8");
             response.getWriter().write("{\"error\": \"Invalid token\"}");
-            return;
+            e.printStackTrace();
         }
-
-        if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-            if (userDetails == null) {
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                response.setContentType("application/json; charset=UTF-8");
-                response.setCharacterEncoding("UTF-8");
-                response.getWriter().write("{\"error\": \"User not found\"}");
-                return;
-            }
-            if (jwtService.validateToken(jwtToken, userDetails)) {
-                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authToken);
-            }
-        }
-        filterChain.doFilter(request, response);
     }
 }
