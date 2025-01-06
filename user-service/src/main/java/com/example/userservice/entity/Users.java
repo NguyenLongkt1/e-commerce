@@ -36,6 +36,7 @@ public class Users extends BaseEntity {
     @Column(name="status",columnDefinition = "INT(1)")
     private Integer status;
 
+    @Transient
     private Set<String> roles;
 
     public String getUsername() {
