@@ -12,6 +12,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
+
 @Component
 public class UserInfoUserDetailsService implements UserDetailsService {
 
@@ -28,7 +30,7 @@ public class UserInfoUserDetailsService implements UserDetailsService {
     UsersDTO callApiGetUserByUserName(String username) {
 
         String url = "http://localhost:8081/users/command/users/find-by-username";
-        String urlWithParams = UriComponentsBuilder.fromHttpUrl(url)
+        String urlWithParams = UriComponentsBuilder.fromUri(URI.create(url))
                 .queryParam("username", username)
                 .toUriString();
 
