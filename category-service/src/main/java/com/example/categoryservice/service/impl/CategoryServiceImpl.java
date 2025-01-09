@@ -2,9 +2,9 @@ package com.example.categoryservice.service.impl;
 
 import com.example.categoryservice.dto.CategoryDTO;
 import com.example.categoryservice.entity.Category;
-import com.example.categoryservice.exception.BussinessException;
 import com.example.categoryservice.repository.CategoryRepository;
 import com.example.categoryservice.service.CategoryService;
+import com.example.common.exception.BussinessException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,7 +18,7 @@ public class CategoryServiceImpl implements CategoryService {
     CategoryRepository categoryRepository;
 
     @Autowired
-    ModelMapper mapper;
+    ModelMapper modelMapper;
 
     @Override
     public Category create(Category entity) {
@@ -39,7 +39,7 @@ public class CategoryServiceImpl implements CategoryService {
     public void delete(Long id) {
         Category category = retrieve(id);
         if(!ObjectUtils.isEmpty(category)){
-            category.setIsDelete(true);
+            category.setDelete(true);
             update(category);
         }
     }
@@ -47,8 +47,8 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     @Transactional
     public Category doCreate(CategoryDTO categoryDTO) {
-        Category category = mapper.map(categoryDTO,Category.class);
-        category.setIsDelete(false);
+        Category category = modelMapper.map(categoryDTO,Category.class);
+        category.setDelete(false);
         return create(category);
     }
 
