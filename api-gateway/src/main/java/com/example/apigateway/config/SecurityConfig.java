@@ -57,13 +57,14 @@ public class SecurityConfig {
         });
         http.csrf(AbstractHttpConfigurer::disable);
         http.sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-//        http.authenticationProvider(authenticationProvider());
         http.addFilterBefore(authFilter, UsernamePasswordAuthenticationFilter.class);
         http.authorizeHttpRequests(request ->
                 request.requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/logout").permitAll()
                         .requestMatchers(HttpMethod.POST, "/users/command/users").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/users/command/users/**").hasRole("ADMIN")
+//                        .requestMatchers(HttpMethod.GET, "/users/command/users/{userId}").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/users/command/users/find-by-username").hasAnyRole("ADMIN", "USER")
+                        .requestMatchers(HttpMethod.GET, "/users/command/users/{userId}").hasRole("ADMIN")
                         .anyRequest().authenticated());
 
         return http.build();

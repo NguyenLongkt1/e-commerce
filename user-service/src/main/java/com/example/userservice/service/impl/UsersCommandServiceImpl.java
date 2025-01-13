@@ -1,7 +1,9 @@
 package com.example.userservice.service.impl;
 
 import com.example.userservice.dto.UsersDTO;
+import com.example.userservice.entity.Role;
 import com.example.userservice.entity.Users;
+import com.example.userservice.repository.RoleRepository;
 import com.example.userservice.repository.UsersRepository;
 import com.example.userservice.service.IUsersCommandService;
 import org.modelmapper.ModelMapper;
@@ -10,11 +12,16 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Set;
+
 @Service
 public class UsersCommandServiceImpl implements IUsersCommandService {
 
     @Autowired
     UsersRepository usersRepository;
+
+    @Autowired
+    RoleRepository roleRepository;
 
     @Autowired
     ModelMapper modelMapper;
@@ -49,6 +56,9 @@ public class UsersCommandServiceImpl implements IUsersCommandService {
 
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         user.setPassword(passwordEncoder.encode(dto.getPassword()));
+
+        Set<Role> roles = roleRepository.findByRoleCodeIn(dto.getRoles());
+        user.setRoles(roles);
         return create(user);
     }
 

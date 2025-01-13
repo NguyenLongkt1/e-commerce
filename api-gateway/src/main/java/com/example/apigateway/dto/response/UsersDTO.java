@@ -25,5 +25,5 @@ public class UsersDTO {
     private LocalDateTime updatedDate;
     private Long createdBy;
     private Long updateBy;
-    private Set<String> roles;
+    private Set<RoleDTO> roles;
 }

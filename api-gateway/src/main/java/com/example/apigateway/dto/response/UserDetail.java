@@ -17,11 +17,11 @@ import java.util.Set;
 public class UserDetail implements UserDetails {
 
     private String username;
-    private Set<String> roles;
+    private Set<RoleDTO> roles;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return roles.stream().map(item -> new SimpleGrantedAuthority("ROLE_" + item)).toList();
+        return roles.stream().map(item -> new SimpleGrantedAuthority("ROLE_" + item.getRoleCode())).toList();
     }
 
     @Override
