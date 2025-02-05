@@ -8,10 +8,17 @@ import com.example.userservice.repository.UsersRepository;
 import com.example.userservice.service.IUsersCommandService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
 import java.util.Set;
 
 @Service
@@ -25,6 +32,12 @@ public class UsersCommandServiceImpl implements IUsersCommandService {
 
     @Autowired
     ModelMapper modelMapper;
+
+    @Autowired
+    RestTemplate restTemplate;
+
+    @Value("${app.user.defaultPassword}")
+    String defaultPassword;
 
     @Override
     public Users create(Users entity) {
@@ -47,19 +60,50 @@ public class UsersCommandServiceImpl implements IUsersCommandService {
     }
 
     @Override
-    public Users doCreateUser(UsersDTO dto) {
-        Users user = modelMapper.map(dto,Users.class);
+    public Users doCreateUser(UsersDTO dto, MultipartFile file) {
+        Users user = modelMapper.map(dto, Users.class);
 
         if (findByUsername(dto.getUsername()) != null) {
             throw new RuntimeException("User already existed");
         }
 
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        user.setPassword(passwordEncoder.encode(dto.getPassword()));
+        String password = dto.getPassword();
+        if(!StringUtils.hasLength(password)){
+            password = defaultPassword;
+        }
+        user.setPassword(passwordEncoder.encode(password));
 
         Set<Role> roles = roleRepository.findByRoleCodeIn(dto.getRoles());
         user.setRoles(roles);
+
+        if(!file.isEmpty()){
+//           String path = doUploadFile(file);
+//           user.setAvatar(path);
+        }
+
         return create(user);
+    }
+
+    String doUploadFile(MultipartFile file) {
+
+        String url = "http://localhost:8084/files/storage/upload";
+        String urlWithParams = UriComponentsBuilder.fromUri(URI.create(url))
+                .queryParam("file", file)
+                .toUriString();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<?> requestEntity = new HttpEntity<>(headers);
+
+        ResponseEntity<String> response = restTemplate.exchange(
+                urlWithParams,
+                HttpMethod.POST,
+                requestEntity,
+                String.class
+        );
+        return response.getBody();
     }
 
     @Override

@@ -2,8 +2,8 @@ package com.example.categoryservice.controller;
 
 import com.example.categoryservice.dto.CategoryDTO;
 import com.example.categoryservice.entity.Category;
-import com.example.categoryservice.exception.BussinessException;
 import com.example.categoryservice.service.CategoryService;
+import com.example.common.exception.BussinessException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

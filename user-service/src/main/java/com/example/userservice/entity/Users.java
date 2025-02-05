@@ -7,35 +7,45 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.Set;
 
-@Table(name="users",schema = "user-service")
+@Table(name = "users", schema = "user-service")
 @Entity
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Users extends BaseEntity {
 
-    @Column(name="user_name",columnDefinition = "VARCHAR(20)")
+    @Column(name = "user_name", columnDefinition = "VARCHAR(20)")
     private String username;
 
-    @Column(name="full_name",columnDefinition = "VARCHAR(255)")
+    @Column(name = "full_name", columnDefinition = "VARCHAR(255)")
     private String fullName;
 
-    @Column(name="phone_number",columnDefinition = "VARCHAR(20)")
+    @Column(name = "phone_number", columnDefinition = "VARCHAR(20)")
     private String phoneNumber;
 
-    @Column(name="email",columnDefinition = "VARCHAR(255)")
+    @Column(name = "email", columnDefinition = "VARCHAR(255)")
     private String email;
 
-    @Column(name="address",columnDefinition = "TEXT")
+    @Column(name = "address", columnDefinition = "TEXT")
     private String address;
 
-    @Column(name="password",columnDefinition = "VARCHAR(500)")
+    @Column(name = "password", columnDefinition = "VARCHAR(500)")
     private String password;
 
-    @Column(name="status",columnDefinition = "INT(1)")
+    @Column(name = "status", columnDefinition = "INT(1)")
     private Integer status;
+
+    @Column(name = "gender", columnDefinition = "VARCHAR(50)")
+    private String gender;
+
+    @Column(name = "birthday")
+    private LocalDateTime birthday;
+
+    @Column(name = "avatar")
+    private String avatar;
 
     @ManyToMany
     @JsonManagedReference
@@ -108,5 +118,29 @@ public class Users extends BaseEntity {
 
     public void setRoles(Set<Role> roles) {
         this.roles = roles;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public LocalDateTime getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(LocalDateTime birthday) {
+        this.birthday = birthday;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 }

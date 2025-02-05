@@ -23,13 +23,17 @@ public class Category extends BaseEntity {
     @Column(name = "is_delete")
     private Boolean isDelete;
 
+    @Column(name = "thumbnail")
+    private String thumbnail;
+
     public Category(){}
 
-    public Category(String name, String code, String description, Boolean isDelete) {
+    public Category(String name, String code, String description, Boolean isDelete, String thumbnail) {
         this.name = name;
         this.code = code;
         this.description = description;
         this.isDelete = isDelete;
+        this.thumbnail = thumbnail;
     }
 
     public String getName() {
@@ -62,5 +66,13 @@ public class Category extends BaseEntity {
 
     public void setDelete(Boolean delete) {
         isDelete = delete;
+    }
+
+    public String getThumbnail() {
+        return thumbnail;
+    }
+
+    public void setThumbnail(String thumbnail) {
+        this.thumbnail = thumbnail;
     }
 }

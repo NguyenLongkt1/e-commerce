@@ -22,6 +22,9 @@ public class UsersDTO {
     private Long createdBy;
     private Long updateBy;
     private Set<String> roles;
+    private LocalDateTime birthday;
+    private String gender;
+    private String avatar;
 
     public Long getId() {
         return id;
@@ -125,5 +128,29 @@ public class UsersDTO {
 
     public void setRoles(Set<String> roles) {
         this.roles = roles;
+    }
+
+    public LocalDateTime getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(LocalDateTime birthday) {
+        this.birthday = birthday;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 }
