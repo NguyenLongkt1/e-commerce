@@ -1,6 +1,7 @@
 package com.example.userservice.entity;
 
 import com.example.common.entity.BaseEntity;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -41,11 +42,15 @@ public class Users extends BaseEntity {
     @Column(name = "gender", columnDefinition = "VARCHAR(50)")
     private String gender;
 
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     @Column(name = "birthday")
     private LocalDateTime birthday;
 
     @Column(name = "avatar")
     private String avatar;
+
+    @Column(name = "is_delete")
+    private boolean isDelete;
 
     @ManyToMany
     @JsonManagedReference
@@ -142,5 +147,13 @@ public class Users extends BaseEntity {
 
     public void setAvatar(String avatar) {
         this.avatar = avatar;
+    }
+
+    public boolean isDelete() {
+        return isDelete;
+    }
+
+    public void setDelete(boolean delete) {
+        isDelete = delete;
     }
 }

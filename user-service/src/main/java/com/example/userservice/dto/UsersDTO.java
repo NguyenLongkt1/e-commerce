@@ -1,5 +1,6 @@
 package com.example.userservice.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
 import lombok.Data;
 
@@ -17,14 +18,18 @@ public class UsersDTO {
     private String address;
     private String password;
     private Integer status;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdDate;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime updatedDate;
     private Long createdBy;
     private Long updateBy;
-    private Set<String> roles;
+//    private Set<String> roles;
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime birthday;
     private String gender;
     private String avatar;
+    private boolean isDelete;
 
     public Long getId() {
         return id;
@@ -122,13 +127,13 @@ public class UsersDTO {
         this.updateBy = updateBy;
     }
 
-    public Set<String> getRoles() {
-        return roles;
-    }
-
-    public void setRoles(Set<String> roles) {
-        this.roles = roles;
-    }
+//    public Set<String> getRoles() {
+//        return roles;
+//    }
+//
+//    public void setRoles(Set<String> roles) {
+//        this.roles = roles;
+//    }
 
     public LocalDateTime getBirthday() {
         return birthday;
@@ -152,5 +157,13 @@ public class UsersDTO {
 
     public void setAvatar(String avatar) {
         this.avatar = avatar;
+    }
+
+    public boolean isDelete() {
+        return isDelete;
+    }
+
+    public void setDelete(boolean delete) {
+        isDelete = delete;
     }
 }
