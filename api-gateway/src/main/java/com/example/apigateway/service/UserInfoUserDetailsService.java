@@ -29,7 +29,7 @@ public class UserInfoUserDetailsService implements UserDetailsService {
 
     UsersDTO callApiGetUserByUserName(String username) {
 
-        String url = "http://localhost:8081/users/command/users/find-by-username";
+        String url = "http://localhost:8081/users/api/users/find-by-username";
         String urlWithParams = UriComponentsBuilder.fromUri(URI.create(url))
                 .queryParam("username", username)
                 .toUriString();

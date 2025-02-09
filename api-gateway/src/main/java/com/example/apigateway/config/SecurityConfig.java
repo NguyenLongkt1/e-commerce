@@ -12,6 +12,7 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -61,13 +62,17 @@ public class SecurityConfig {
         http.authorizeHttpRequests(request ->
                 request.requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/logout").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/users/command/users").permitAll()
-//                        .requestMatchers(HttpMethod.GET, "/users/command/users/{userId}").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.GET, "/users/command/users/find-by-username").hasAnyRole("ADMIN", "USER")
-                        .requestMatchers(HttpMethod.GET, "/users/command/users/{userId}").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/users/api/users").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/users/api/users/find-by-username").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/users/api/users/{userId}").permitAll()
                         .anyRequest().authenticated());
 
         return http.build();
+    }
+
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return (web) -> web.ignoring().requestMatchers("/users/api/users");
     }
 
     @Bean

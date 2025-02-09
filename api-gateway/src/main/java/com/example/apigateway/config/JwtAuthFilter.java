@@ -29,7 +29,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         String requestURI = request.getRequestURI();
 
         // Kiểm tra xem yêu cầu cần xác thực hay không
-        if (requestURI.equals("/auth/login") || requestURI.equals("/users/command/users") || requestURI.equals("/auth/logout")) {
+        if (requestURI.equals("/auth/login") || requestURI.equals("/users/api/users") || requestURI.equals("/auth/logout")) {
             filterChain.doFilter(request, response);
             return;
         }
