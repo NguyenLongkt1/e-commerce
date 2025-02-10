@@ -70,10 +70,10 @@ public class SecurityConfig {
         return http.build();
     }
 
-    @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().requestMatchers("/users/api/users");
-    }
+//    @Bean
+//    public WebSecurityCustomizer webSecurityCustomizer() {
+//        return (web) -> web.ignoring().requestMatchers("/users/api/users");
+//    }
 
     @Bean
     public RestTemplate restTemplate(RestTemplateBuilder builder) {
