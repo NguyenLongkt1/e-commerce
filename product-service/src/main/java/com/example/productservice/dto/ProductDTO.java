@@ -23,12 +23,14 @@ public class ProductDTO {
     private Long createdBy;
     private LocalDateTime createdDate;
     private Boolean isDelete;
+    private List<String> filePath;
+    private Long shopId;
 
     public ProductDTO() {
     }
 
     public ProductDTO(String name, String code, String description, Integer rating, Double price, Long categoryId, List<Long> lstFileId,
-                      Long createdBy, LocalDateTime createdDate, Boolean isDelete) {
+                      Long createdBy, LocalDateTime createdDate, Boolean isDelete, List<String> filePath, Long shopId) {
         this.name = name;
         this.code = code;
         this.description = description;
@@ -39,6 +41,8 @@ public class ProductDTO {
         this.createdBy = createdBy;
         this.createdDate = createdDate;
         this.isDelete = isDelete;
+        this.filePath = filePath;
+        this.shopId = shopId;
     }
 
     public String getName() {

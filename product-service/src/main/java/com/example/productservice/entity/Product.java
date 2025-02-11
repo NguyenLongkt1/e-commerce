@@ -29,11 +29,14 @@ public class Product extends BaseEntity {
     @Column(name = "is_delete")
     private Boolean isDelete;
 
+    @Column(name = "shop_id")
+    private Long shopId;
+
     public Product() {
     }
 
     public Product(String name, String code, String description, Integer rating, Double price,
-                   Long categoryId, Boolean isDelete) {
+                   Long categoryId, Boolean isDelete, Long shopId) {
         this.name = name;
         this.code = code;
         this.description = description;
@@ -41,6 +44,7 @@ public class Product extends BaseEntity {
         this.price = price;
         this.categoryId = categoryId;
         this.isDelete = isDelete;
+        this.shopId = shopId;
     }
 
     public String getName() {
@@ -97,5 +101,13 @@ public class Product extends BaseEntity {
 
     public void setDelete(Boolean delete) {
         isDelete = delete;
+    }
+
+    public Long getShopId() {
+        return shopId;
+    }
+
+    public void setShopId(Long shopId) {
+        this.shopId = shopId;
     }
 }
