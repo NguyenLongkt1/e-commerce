@@ -13,5 +13,5 @@ public interface CategoryService extends ICommandService<Category> {
     Category doCreate(@Valid CategoryDTO categoryDTO);
     Category doUpdate(@Valid CategoryDTO categoryDTO) throws BussinessException, BussinessException;
     List<Category> getAllCategory(String name);
-    Category doCreateOrUpdateUser(CategoryDTO dto, MultipartFile file);
+    Category doCreateOrUpdateCategory(CategoryDTO dto, MultipartFile file);
 }

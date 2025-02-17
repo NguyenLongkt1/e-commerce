@@ -3,6 +3,7 @@ package com.example.fileservice.service.impl;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectResult;
+import com.example.common.entity.BaseEntity;
 import com.example.common.exception.BussinessException;
 import com.example.fileservice.entity.FileManagement;
 import com.example.fileservice.repository.FileManagementRepository;
@@ -15,7 +16,9 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class FileServiceImpl implements FileService {
@@ -32,6 +35,11 @@ public class FileServiceImpl implements FileService {
 
     @Autowired
     private FileManagementRepository repository;
+
+    @Override
+    public List<FileManagement> getFilesByIds(List<Long> ids) {
+        return repository.findByIdIn(ids);
+    }
 
     @Override
     public String uploadSingleFile(MultipartFile multipartFile) throws BussinessException {
@@ -53,6 +61,32 @@ public class FileServiceImpl implements FileService {
             throw new BussinessException(e.getMessage(), HttpStatus.SC_INTERNAL_SERVER_ERROR);
         }
         return fileUrl;
+    }
+
+    @Override
+    public List<Long> uploadMultipleFiles(List<MultipartFile> multipartFiles) throws BussinessException {
+        String fileUrl;
+        List<FileManagement> fileManagements = new ArrayList<>();
+        try {
+            for (MultipartFile multipartFile : multipartFiles) {
+                String fileName = generateFileName(multipartFile);
+                File convertFile = convertMultipartFileToFile(multipartFile);
+                amazonS3.putObject(bucketName, fileName, convertFile);
+                fileUrl = endpointUrl + "/" + bucketName + "/" + fileName;
+                ObjectMetadata metadata = amazonS3.getObjectMetadata(bucketName, fileName);
+                FileManagement fileManagement = new FileManagement();
+                fileManagement.setFileName(fileName);
+                fileManagement.setFilePath(fileUrl);
+                fileManagement.setSize(metadata.getContentLength());
+                fileManagement.setFileType(fileName.substring(fileName.lastIndexOf(".") + 1));
+                fileManagement.setIsDelete(0);
+                fileManagements.add(fileManagement);
+            }
+            repository.saveAll(fileManagements);
+        }catch (Exception e){
+            throw new BussinessException(e.getMessage(), HttpStatus.SC_INTERNAL_SERVER_ERROR);
+        }
+        return fileManagements.stream().map(BaseEntity::getId).toList();
     }
 
     public String generateFileName(MultipartFile file){
@@ -89,5 +123,14 @@ public class FileServiceImpl implements FileService {
             fileManagement.setIsDelete(1);
             update(fileManagement);
         }
+    }
+
+    @Override
+    public void deleteByIds(List<Long> ids) {
+        List<FileManagement> files = getFilesByIds(ids);
+        for (FileManagement file : files) {
+            file.setIsDelete(1);
+        }
+        repository.saveAll(files);
     }
 }

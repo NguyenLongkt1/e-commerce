@@ -84,10 +84,10 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Category doCreateOrUpdateUser(CategoryDTO dto, MultipartFile file) {
+    public Category doCreateOrUpdateCategory(CategoryDTO dto, MultipartFile file) {
         Category category = modelMapper.map(dto, Category.class);
 
-        if(ObjectUtils.isEmpty(dto.getId())) {
+        if (ObjectUtils.isEmpty(dto.getId())) {
             category.setDelete(false);
 
             if (!ObjectUtils.isEmpty(file)) {
@@ -96,10 +96,10 @@ public class CategoryServiceImpl implements CategoryService {
             }
 
             return create(category);
-        }else{
+        } else {
             Category oldCategory = retrieve(dto.getId());
-            if(ObjectUtils.isEmpty(oldCategory)){
-                throw new RuntimeException("Not found category with id: "+dto.getId());
+            if (ObjectUtils.isEmpty(oldCategory)) {
+                throw new RuntimeException("Not found category with id: " + dto.getId());
             }
             oldCategory.setName(category.getName());
             oldCategory.setCode(category.getCode());
