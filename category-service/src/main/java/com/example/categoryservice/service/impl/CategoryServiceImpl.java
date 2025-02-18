@@ -80,7 +80,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public List<Category> getAllCategory(String name) {
-        return categoryRepository.findAllByName("%"+name+"%");
+        return categoryRepository.findAllByName(name);
     }
 
     @Override

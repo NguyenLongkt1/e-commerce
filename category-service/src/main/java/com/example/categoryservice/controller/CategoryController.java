@@ -51,6 +51,11 @@ public class CategoryController {
         return ResponseEntity.ok(categoryService.getAllCategory(name));
     }
 
+    @GetMapping("/public/all")
+    public ResponseEntity<List<Category>> getAllCategoryPublic(@RequestParam(value = "name",required = false) String name) {
+        return ResponseEntity.ok(categoryService.getAllCategory(name));
+    }
+
     @PostMapping
     public ResponseEntity<Category> createOrUpdateCategory(@RequestPart(value="data") String dto, @RequestPart(value = "file",required = false) MultipartFile file) throws JsonProcessingException {
         CategoryDTO userDto = mapper.readValue(dto,CategoryDTO.class);

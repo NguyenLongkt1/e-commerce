@@ -7,6 +7,6 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface CategoryRepository extends JpaRepository<Category,Long> {
-    @Query("select a from Category a where a.isDelete = false and (:name is null or a.name like :name)")
+    @Query("select a from Category a where a.isDelete = false and (:name is null or a.name like %:name%)")
     List<Category> findAllByName(String name);
 }
