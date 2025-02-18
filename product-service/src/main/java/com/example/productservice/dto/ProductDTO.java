@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public class ProductDTO {
+    private Long id;
 
     @NotNull(message = "Tên sản phẩm không được để trống")
     @Max(value = 500, message = "Tên sản phẩm không được vượt quá 500 kí tự")
@@ -19,30 +20,38 @@ public class ProductDTO {
     @NotNull(message = "Giá sản phẩm không được để trống")
     private Double price;
     private Long categoryId;
-    private List<Long> lstFileId;
     private Long createdBy;
     private LocalDateTime createdDate;
     private Boolean isDelete;
-    private List<String> filePath;
+    private List<Long> lstRemovedFileId;
+    private List<FileDTO> lstFile;
     private Long shopId;
 
     public ProductDTO() {
     }
 
-    public ProductDTO(String name, String code, String description, Integer rating, Double price, Long categoryId, List<Long> lstFileId,
-                      Long createdBy, LocalDateTime createdDate, Boolean isDelete, List<String> filePath, Long shopId) {
+    public ProductDTO(String name, String code, String description, Integer rating, Double price, Long categoryId, List<Long> lstRemovedFileId,
+                      Long createdBy, LocalDateTime createdDate, Boolean isDelete, List<FileDTO> lstFile, Long shopId) {
         this.name = name;
         this.code = code;
         this.description = description;
         this.rating = rating;
         this.price = price;
         this.categoryId = categoryId;
-        this.lstFileId = lstFileId;
+        this.lstRemovedFileId = lstRemovedFileId;
         this.createdBy = createdBy;
         this.createdDate = createdDate;
         this.isDelete = isDelete;
-        this.filePath = filePath;
+        this.lstFile = lstFile;
         this.shopId = shopId;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -93,12 +102,12 @@ public class ProductDTO {
         this.categoryId = categoryId;
     }
 
-    public List<Long> getLstFileId() {
-        return lstFileId;
+    public List<Long> getLstRemovedFileId() {
+        return lstRemovedFileId;
     }
 
-    public void setLstFileId(List<Long> lstFileId) {
-        this.lstFileId = lstFileId;
+    public void setLstRemovedFileId(List<Long> lstRemovedFileId) {
+        this.lstRemovedFileId = lstRemovedFileId;
     }
 
     public Long getCreatedBy() {
@@ -123,5 +132,13 @@ public class ProductDTO {
 
     public void setDelete(Boolean delete) {
         isDelete = delete;
+    }
+
+    public List<FileDTO> getLstFile() {
+        return lstFile;
+    }
+
+    public void setLstFile(List<FileDTO> lstFile) {
+        this.lstFile = lstFile;
     }
 }

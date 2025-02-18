@@ -59,6 +59,6 @@ public class CategoryController {
     @PostMapping
     public ResponseEntity<Category> createOrUpdateCategory(@RequestPart(value="data") String dto, @RequestPart(value = "file",required = false) MultipartFile file) throws JsonProcessingException {
         CategoryDTO userDto = mapper.readValue(dto,CategoryDTO.class);
-        return ResponseEntity.ok(categoryService.doCreateOrUpdateUser(userDto,file));
+        return ResponseEntity.ok(categoryService.doCreateOrUpdateCategory(userDto,file));
     }
 }
