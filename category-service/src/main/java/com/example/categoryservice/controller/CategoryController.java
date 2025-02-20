@@ -47,7 +47,7 @@ public class CategoryController {
     }
 
     @GetMapping()
-    public ResponseEntity<List<Category>> getAllCategory(@RequestParam String name) {
+    public ResponseEntity<List<Category>> getAllCategory(@RequestParam(required = false) String name) {
         return ResponseEntity.ok(categoryService.getAllCategory(name));
     }
 
