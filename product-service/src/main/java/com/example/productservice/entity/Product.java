@@ -18,7 +18,7 @@ public class Product extends BaseEntity {
     private String description;
 
     @Column(name = "rating")
-    private Integer rating;
+    private Double rating;
 
     @Column(name = "price")
     private Double price;
@@ -26,25 +26,19 @@ public class Product extends BaseEntity {
     @Column(name = "category_id")
     private Long categoryId;
 
+    @Column(name = "category_name")
+    private String categoryName;
+
     @Column(name = "is_delete")
     private Boolean isDelete;
 
     @Column(name = "shop_id")
     private Long shopId;
 
-    public Product() {
-    }
+    @Column(name = "shop_name")
+    private String shopName;
 
-    public Product(String name, String code, String description, Integer rating, Double price,
-                   Long categoryId, Boolean isDelete, Long shopId) {
-        this.name = name;
-        this.code = code;
-        this.description = description;
-        this.rating = rating;
-        this.price = price;
-        this.categoryId = categoryId;
-        this.isDelete = isDelete;
-        this.shopId = shopId;
+    public Product() {
     }
 
     public String getName() {
@@ -71,11 +65,11 @@ public class Product extends BaseEntity {
         this.description = description;
     }
 
-    public Integer getRating() {
+    public Double getRating() {
         return rating;
     }
 
-    public void setRating(Integer rating) {
+    public void setRating(Double rating) {
         this.rating = rating;
     }
 
@@ -109,5 +103,21 @@ public class Product extends BaseEntity {
 
     public void setShopId(Long shopId) {
         this.shopId = shopId;
+    }
+
+    public String getShopName() {
+        return shopName;
+    }
+
+    public void setShopName(String shopName) {
+        this.shopName = shopName;
+    }
+
+    public String getCategoryName() {
+        return categoryName;
+    }
+
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
     }
 }

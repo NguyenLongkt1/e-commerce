@@ -53,8 +53,8 @@ public class ProductCommandServiceImpl implements ProductCommandService {
     }
 
     @Override
-    public List<Product> getAllProduct(@RequestParam String name, @RequestParam String code) {
-        return productCommandRepository.findAllByName(name, code);
+    public List<Product> getAllProduct(String name,String code, Integer categoryId, Integer shopId) {
+        return productCommandRepository.findAllByName(name, code, categoryId, shopId);
     }
 
     @Override
@@ -140,7 +140,9 @@ public class ProductCommandServiceImpl implements ProductCommandService {
             oldProduct.setDescription(product.getDescription());
             oldProduct.setPrice(product.getPrice());
             oldProduct.setCategoryId(product.getCategoryId());
+            oldProduct.setCategoryName(product.getCategoryName());
             oldProduct.setShopId(product.getShopId());
+            oldProduct.setShopName(product.getShopName());
             update(oldProduct);
 
             //Xóa files

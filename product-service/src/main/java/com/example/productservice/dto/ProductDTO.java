@@ -16,34 +16,20 @@ public class ProductDTO {
     @Max(value = 100, message = "Mã sản phẩm không được vượt quá 100 kí tự")
     private String code;
     private String description;
-    private Integer rating;
+    private Double rating = 0.0;
     @NotNull(message = "Giá sản phẩm không được để trống")
     private Double price;
     private Long categoryId;
+    private String categoryName;
     private Long createdBy;
     private LocalDateTime createdDate;
     private Boolean isDelete;
     private List<Long> lstRemovedFileId;
     private List<FileDTO> lstFile;
     private Long shopId;
+    private String shopName;
 
     public ProductDTO() {
-    }
-
-    public ProductDTO(String name, String code, String description, Integer rating, Double price, Long categoryId, List<Long> lstRemovedFileId,
-                      Long createdBy, LocalDateTime createdDate, Boolean isDelete, List<FileDTO> lstFile, Long shopId) {
-        this.name = name;
-        this.code = code;
-        this.description = description;
-        this.rating = rating;
-        this.price = price;
-        this.categoryId = categoryId;
-        this.lstRemovedFileId = lstRemovedFileId;
-        this.createdBy = createdBy;
-        this.createdDate = createdDate;
-        this.isDelete = isDelete;
-        this.lstFile = lstFile;
-        this.shopId = shopId;
     }
 
     public Long getId() {
@@ -78,11 +64,11 @@ public class ProductDTO {
         this.description = description;
     }
 
-    public Integer getRating() {
+    public Double getRating() {
         return rating;
     }
 
-    public void setRating(Integer rating) {
+    public void setRating(Double rating) {
         this.rating = rating;
     }
 
@@ -140,5 +126,29 @@ public class ProductDTO {
 
     public void setLstFile(List<FileDTO> lstFile) {
         this.lstFile = lstFile;
+    }
+
+    public Long getShopId() {
+        return shopId;
+    }
+
+    public void setShopId(Long shopId) {
+        this.shopId = shopId;
+    }
+
+    public String getShopName() {
+        return shopName;
+    }
+
+    public void setShopName(String shopName) {
+        this.shopName = shopName;
+    }
+
+    public String getCategoryName() {
+        return categoryName;
+    }
+
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
     }
 }

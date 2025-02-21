@@ -42,8 +42,9 @@ public class ProductCommandController{
     }
 
     @GetMapping
-    public ResponseEntity<List<Product>> getAllProduct(@RequestParam(required = false) String name, @RequestParam(required = false) String code) {
-        return ResponseEntity.ok(productCommandService.getAllProduct(name, code));
+    public ResponseEntity<List<Product>> getAllProduct(@RequestParam(required = false) String name, @RequestParam(required = false) String code,
+                                                       @RequestParam(required = false) Integer categoryId, @RequestParam(required = false) Integer shopId) {
+        return ResponseEntity.ok(productCommandService.getAllProduct(name, code, categoryId, shopId));
     }
 
     @PostMapping
