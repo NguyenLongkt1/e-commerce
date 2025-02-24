@@ -62,9 +62,7 @@ public class SecurityConfig {
         http.authorizeHttpRequests(request ->
                 request.requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/logout").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/users/api/users").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/users/api/users/find-by-username").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/users/api/users/{userId}").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/categories/category/public/all").permitAll()
                         .anyRequest().authenticated());
 
         return http.build();
