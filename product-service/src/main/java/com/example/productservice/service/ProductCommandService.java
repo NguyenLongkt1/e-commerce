@@ -15,5 +15,5 @@ public interface ProductCommandService extends ICommandService<Product> {
     Product updateProduct(Long id,@Valid ProductDTO dto) throws BussinessException;
     Product doCreateOrUpdateProduct(ProductDTO dto, List<MultipartFile> files);
     ProductDTO retrieveById(Long id);
-    List<Product> getAllProduct(String name, String code, Integer categoryId, Integer shopId);
+    List<ProductDTO> getAllProduct(String name, String code, Integer categoryId, Integer shopId);
 }

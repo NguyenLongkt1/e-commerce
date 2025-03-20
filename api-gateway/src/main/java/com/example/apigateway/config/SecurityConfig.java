@@ -63,6 +63,8 @@ public class SecurityConfig {
                 request.requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/logout").permitAll()
                         .requestMatchers(HttpMethod.GET, "/categories/category/public/all").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/products/command/products").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/products/command/products/*").permitAll()
                         .anyRequest().authenticated());
 
         return http.build();

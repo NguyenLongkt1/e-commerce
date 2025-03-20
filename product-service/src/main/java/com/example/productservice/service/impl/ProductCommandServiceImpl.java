@@ -53,8 +53,18 @@ public class ProductCommandServiceImpl implements ProductCommandService {
     }
 
     @Override
-    public List<Product> getAllProduct(String name,String code, Integer categoryId, Integer shopId) {
-        return productCommandRepository.findAllByName(name, code, categoryId, shopId);
+    public List<ProductDTO> getAllProduct(String name,String code, Integer categoryId, Integer shopId) {
+        List<ProductDTO> result = new ArrayList<>();
+        List<Product> lstProduct = productCommandRepository.findAllByName(name, code, categoryId, shopId);
+        if(lstProduct != null){
+            lstProduct.forEach((e)->{
+                List<FileDTO> filePaths = getFilesByIds(productFileRepository.findFileIdsByProductId(e.getId()));
+                ProductDTO dto = modelMapper.map(e,ProductDTO.class);
+                dto.setLstFile(filePaths);
+                result.add(dto);
+            });
+        }
+        return result;
     }
 
     @Override
@@ -120,7 +130,9 @@ public class ProductCommandServiceImpl implements ProductCommandService {
 
         if (ObjectUtils.isEmpty(dto.getId())) {
             product.setDelete(false);
-
+            if(dto.getRating() == null){
+                product.setRating(5.0);
+            }
             create(product);
 
             if (!CollectionUtils.isEmpty(files)) {
