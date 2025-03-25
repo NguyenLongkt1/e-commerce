@@ -7,15 +7,16 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDateTime;
 import java.util.Set;
 
 @Table(name = "users", schema = "user-service")
 @Entity
-@Builder
-@NoArgsConstructor
+@SuperBuilder
 @AllArgsConstructor
+@NoArgsConstructor
 public class Users extends BaseEntity {
 
     @Column(name = "user_name", columnDefinition = "VARCHAR(20)")
