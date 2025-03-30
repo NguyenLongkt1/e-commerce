@@ -1,16 +1,9 @@
 version: '3.8'
 services:
-  common-service:
-    build:
-      context: ./common
-      dockerfile: Dockerfile
-    image: common-service:latest
   product-service:
     build:
       context: ./product-service
       dockerfile: Dockerfile
-      args:
-        BASE_IMAGE: common-service:latest
     image: product-service:latest
     depends_on:
       - common-service
