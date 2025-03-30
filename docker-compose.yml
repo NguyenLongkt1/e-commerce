@@ -7,6 +7,33 @@ services:
     image: eureka-server:latest
     ports:
       - "8761:8761"
+  api-gateway:
+    build:
+      context: ./api-gateway
+      dockerfile: Dockerfile
+    image: api-gateway:latest
+    depends_on:
+      - eureka-server
+    ports:
+      - "8888:8888"
+  user-service:
+    build:
+      context: ./user-service
+      dockerfile: Dockerfile
+    image: user-service:latest
+    depends_on:
+      - eureka-server
+    ports:
+      - "8081:8081"
+  category-service:
+    build:
+      context: ./category-service
+      dockerfile: Dockerfile
+    image: category-service:latest
+    depends_on:
+      - eureka-server
+    ports:
+      - "8082:8082"
   product-service:
     build:
       context: ./product-service
@@ -16,3 +43,21 @@ services:
       - eureka-server
     ports:
       - "8083:8083"
+  file-service:
+    build:
+      context: ./file-service
+      dockerfile: Dockerfile
+    image: file-service:latest
+    depends_on:
+      - eureka-server
+    ports:
+      - "8084:8084"
+  shop-service:
+    build:
+      context: ./shop-service
+      dockerfile: Dockerfile
+    image: shop-service:latest
+    depends_on:
+      - eureka-server
+    ports:
+      - "8085:8085"
