@@ -1,11 +1,18 @@
 version: '3.8'
 services:
+  eureka-server:
+    build:
+      context: ./eureka-server
+      dockerfile: Dockerfile
+    image: eureka-server:latest
+    ports:
+      - "8761:8761"
   product-service:
     build:
       context: ./product-service
       dockerfile: Dockerfile
     image: product-service:latest
     depends_on:
-      - common-service
+      - eureka-server
     ports:
       - "8083:8083"
