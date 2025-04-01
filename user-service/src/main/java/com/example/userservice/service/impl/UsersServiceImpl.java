@@ -25,6 +25,9 @@ import java.util.List;
 @Service
 public class UsersServiceImpl implements IUsersService {
 
+    @Value("${file-service.host}")
+    private String fileServiceUrl;
+
     @Autowired
     UsersRepository usersRepository;
 
@@ -115,7 +118,7 @@ public class UsersServiceImpl implements IUsersService {
 
     String doUploadFile(MultipartFile file) {
 
-        String url = "http://localhost:8084/storage/upload";
+        String url = fileServiceUrl + "/storage/upload";
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
