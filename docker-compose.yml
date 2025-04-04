@@ -16,6 +16,8 @@ services:
       - eureka-server
     ports:
       - "8888:8888"
+    environment:
+      - EUREKA_URL=http://42.112.26.140:8761
   user-service:
     build:
       context: ./user-service
