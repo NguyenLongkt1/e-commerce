@@ -7,6 +7,8 @@ services:
     image: eureka-server:latest
     ports:
       - "8761:8761"
+    networks:
+      - app-network
   api-gateway:
     build:
       context: ./api-gateway
@@ -18,6 +20,8 @@ services:
       - "8888:8888"
     environment:
       - EUREKA_URL=http://42.112.26.140:8761
+    networks:
+      - app-network
   user-service:
     build:
       context: ./user-service
@@ -27,6 +31,8 @@ services:
       - eureka-server
     ports:
       - "8081:8081"
+    networks:
+      - app-network
   category-service:
     build:
       context: ./category-service
@@ -36,6 +42,8 @@ services:
       - eureka-server
     ports:
       - "8082:8082"
+    networks:
+      - app-network
   product-service:
     build:
       context: ./product-service
@@ -45,6 +53,8 @@ services:
       - eureka-server
     ports:
       - "8083:8083"
+    networks:
+      - app-network
   file-service:
     build:
       context: ./file-service
@@ -54,6 +64,8 @@ services:
       - eureka-server
     ports:
       - "8084:8084"
+    networks:
+      - app-network
   shop-service:
     build:
       context: ./shop-service
@@ -63,3 +75,9 @@ services:
       - eureka-server
     ports:
       - "8085:8085"
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
