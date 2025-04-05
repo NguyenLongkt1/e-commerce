@@ -4,6 +4,7 @@ import com.example.apigateway.dto.response.UserDetail;
 import com.example.apigateway.dto.response.UsersDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -17,6 +18,8 @@ import java.net.URI;
 @Component
 public class UserInfoUserDetailsService implements UserDetailsService {
 
+    @Value("${user-service.host}")
+    private String userServiceUrl;
     @Autowired
     private RestTemplate restTemplate;
     @Autowired
@@ -29,7 +32,7 @@ public class UserInfoUserDetailsService implements UserDetailsService {
 
     UsersDTO callApiGetUserByUserName(String username) {
 
-        String url = "http://localhost:8081/users/api/users/find-by-username";
+        String url = userServiceUrl + "/api/users/find-by-username";
         String urlWithParams = UriComponentsBuilder.fromUri(URI.create(url))
                 .queryParam("username", username)
                 .toUriString();

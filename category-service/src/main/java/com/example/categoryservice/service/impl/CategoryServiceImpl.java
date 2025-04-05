@@ -7,6 +7,7 @@ import com.example.categoryservice.service.CategoryService;
 import com.example.common.exception.BussinessException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,6 +24,9 @@ import java.util.List;
 
 @Service
 public class CategoryServiceImpl implements CategoryService {
+    @Value("${file-service.host}")
+    private String fileServiceUrl;
+
     @Autowired
     CategoryRepository categoryRepository;
 
@@ -115,7 +119,7 @@ public class CategoryServiceImpl implements CategoryService {
 
     String doUploadFile(MultipartFile file) {
 
-        String url = "http://localhost:8084/storage/upload";
+        String url = fileServiceUrl + "/storage/upload";
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);

@@ -14,6 +14,7 @@ import jakarta.transaction.Transactional;
 import org.apache.http.HttpStatus;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -34,6 +35,9 @@ import java.util.stream.Collectors;
 
 @Service
 public class ProductCommandServiceImpl implements ProductCommandService {
+
+    @Value("${file-service.host}")
+    private String fileServiceUrl;
 
     @Autowired
     ProductCommandRepository productCommandRepository;
@@ -183,7 +187,7 @@ public class ProductCommandServiceImpl implements ProductCommandService {
 
     private List<Long> doUploadFiles(List<MultipartFile> files) {
 
-        String url = "http://localhost:8084/storage/upload-multiple";
+        String url = fileServiceUrl + "/storage/upload-multiple";
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
@@ -208,7 +212,7 @@ public class ProductCommandServiceImpl implements ProductCommandService {
 
     private List<FileDTO> getFilesByIds(List<Long> fileIds) {
 
-        String url = UriComponentsBuilder.fromUriString("http://localhost:8084/storage/get-files-by-ids")
+        String url = UriComponentsBuilder.fromUriString(fileServiceUrl + "/storage/get-files-by-ids")
                 .queryParam("ids", fileIds)
                 .toUriString();
 
@@ -246,7 +250,7 @@ public class ProductCommandServiceImpl implements ProductCommandService {
 
     private void deleteFilesByIds(List<Long> fileIds) {
 
-        String url = UriComponentsBuilder.fromUriString("http://localhost:8084/storage/delete-files-by-ids")
+        String url = UriComponentsBuilder.fromUriString(fileServiceUrl + "/storage/delete-files-by-ids")
                 .queryParam("ids", fileIds)
                 .toUriString();
 

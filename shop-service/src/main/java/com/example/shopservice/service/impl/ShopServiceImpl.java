@@ -7,6 +7,7 @@ import com.example.shopservice.repository.ShopRepository;
 import com.example.shopservice.service.ShopService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.*;
@@ -22,6 +23,9 @@ import java.util.List;
 
 @Service
 public class ShopServiceImpl implements ShopService {
+
+    @Value("${file-service.host}")
+    private String fileServiceUrl;
 
     @Autowired
     ShopRepository repository;
@@ -98,7 +102,7 @@ public class ShopServiceImpl implements ShopService {
 
     String doUploadFile(MultipartFile file) {
 
-        String url = "http://localhost:8084/storage/upload";
+        String url =  fileServiceUrl + "/storage/upload";
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.MULTIPART_FORM_DATA);
