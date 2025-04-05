@@ -8,6 +8,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -51,5 +54,13 @@ public class ProductCommandController{
     public ResponseEntity<Product> createOrUpdateProduct(@RequestPart(value="data") String dto, @RequestPart(value = "files",required = false) List<MultipartFile> file) throws JsonProcessingException {
         ProductDTO userDto = mapper.readValue(dto,ProductDTO.class);
         return ResponseEntity.ok(productCommandService.doCreateOrUpdateProduct(userDto,file));
+    }
+
+    @GetMapping("/get-by-shop/{id}")
+    public ResponseEntity<Page<ProductDTO>> getAllProduct(@PathVariable("id") Long shopId,
+                                                          @RequestParam(name="pageIndex",defaultValue = "1",required = false) Integer pageIndex,
+                                                          @RequestParam(name="pageSize",defaultValue = "10",required = false) Integer pageSize) {
+        Pageable pageable = PageRequest.of(pageIndex, pageSize);
+        return ResponseEntity.ok(productCommandService.getProductsByShopId(shopId,pageable));
     }
 }

@@ -42,6 +42,11 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
+    public FileManagement getFileById(Long fileId) {
+        return repository.getFileById(fileId);
+    }
+
+    @Override
     public String uploadSingleFile(MultipartFile multipartFile) throws BussinessException {
         String fileUrl;
         try {

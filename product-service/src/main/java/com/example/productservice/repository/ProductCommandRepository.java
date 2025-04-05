@@ -1,6 +1,8 @@
 package com.example.productservice.repository;
 
 import com.example.productservice.entity.Product;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -15,4 +17,9 @@ public interface ProductCommandRepository extends JpaRepository<Product,Long> {
             and (:shopId is null or a.shopId = :shopId)
             """)
     List<Product> findAllByName(String name, String code, Integer categoryId, Integer shopId);
+
+    @Query("""
+            select a from Product a where a.isDelete = false and (:shopId is null or a.shopId = :shopId)
+        """)
+    Page<Product> findByShopId(Long shopId, Pageable pageable);
 }

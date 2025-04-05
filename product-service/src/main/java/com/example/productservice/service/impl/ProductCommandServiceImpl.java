@@ -8,24 +8,29 @@ import com.example.productservice.entity.ProductFile;
 import com.example.productservice.repository.ProductCommandRepository;
 import com.example.productservice.repository.ProductFileRepository;
 import com.example.productservice.service.ProductCommandService;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.transaction.Transactional;
 import org.apache.http.HttpStatus;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.ObjectUtils;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductCommandServiceImpl implements ProductCommandService {
@@ -41,6 +46,8 @@ public class ProductCommandServiceImpl implements ProductCommandService {
 
     @Autowired
     RestTemplate restTemplate;
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Override
     public Product create(Product entity) {
@@ -218,6 +225,25 @@ public class ProductCommandServiceImpl implements ProductCommandService {
         return response.getBody();
     }
 
+    private FileDTO getFileByIds(Long fileId) {
+
+        String url = UriComponentsBuilder.fromUriString("http://localhost:8084/storage/retrieve")
+                .queryParam("id", fileId)
+                .toUriString();
+
+        // Tạo request entity
+        HttpHeaders headers = new HttpHeaders();
+        HttpEntity<MultiValueMap<String, Object>> requestEntity = new HttpEntity<>(headers);
+
+        ResponseEntity<FileDTO> response = restTemplate.exchange(
+                url,
+                HttpMethod.GET,
+                requestEntity,
+                new ParameterizedTypeReference<>() {}
+        );
+        return response.getBody();
+    }
+
     private void deleteFilesByIds(List<Long> fileIds) {
 
         String url = UriComponentsBuilder.fromUriString("http://localhost:8084/storage/delete-files-by-ids")
@@ -235,4 +261,27 @@ public class ProductCommandServiceImpl implements ProductCommandService {
                 Void.class
         );
     }
+
+    @Override
+    public Page<ProductDTO> getProductsByShopId(Long shopId, Pageable pageable) {
+        Page<Product> products = productCommandRepository.findByShopId(shopId, pageable);
+        Page<ProductDTO> result = null;
+        if(!ObjectUtils.isEmpty(products.getContent())){
+            List<ProductDTO> productDTOS = products.getContent().stream()
+                    .map(product -> {
+                        ProductDTO productDTO = modelMapper.map(product, ProductDTO.class);
+                        ProductFile productFile = productFileRepository.findFirstByProductId(productDTO.getId());
+                        if(productFile != null){
+                            FileDTO fileDTO = getFileByIds(productFile.getFileId());
+                            if(fileDTO != null){
+                                productDTO.setThumbnail(fileDTO.getFilePath());
+                            }
+                        }
+                        return productDTO;
+                    }).toList();
+            result = new PageImpl<>(productDTOS, pageable, products.getTotalElements());
+        }
+        return result;
+    }
+
 }

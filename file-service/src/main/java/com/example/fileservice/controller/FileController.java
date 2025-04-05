@@ -22,6 +22,11 @@ public class FileController {
         return ResponseEntity.ok(fileService.getFilesByIds(ids));
     }
 
+    @GetMapping("/retrieve")
+    public ResponseEntity<FileManagement> getFileByIds(@RequestParam("id") Long id) {
+        return ResponseEntity.ok(fileService.getFileById(id));
+    }
+
     @PostMapping("/upload")
     public ResponseEntity<String> uploadSingleFile(@RequestPart("file") MultipartFile file) throws BussinessException {
         return ResponseEntity.ok(fileService.uploadSingleFile(file));

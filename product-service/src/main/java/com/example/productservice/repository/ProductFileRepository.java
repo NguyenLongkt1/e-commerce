@@ -11,5 +11,8 @@ public interface ProductFileRepository extends JpaRepository<ProductFile,Long> {
     @Query("select a.fileId from ProductFile a where a.productId = :productId")
     List<Long> findFileIdsByProductId(Long productId);
 
+    ProductFile findFirstByProductId(Long productId);
+
     void deleteByProductIdAndFileIdIn(Long productId, List<Long> fileIds);
+
 }

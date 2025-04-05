@@ -28,6 +28,7 @@ public class ProductDTO {
     private List<FileDTO> lstFile;
     private Long shopId;
     private String shopName;
+    private String thumbnail;
 
     public ProductDTO() {
     }
@@ -150,5 +151,13 @@ public class ProductDTO {
 
     public void setCategoryName(String categoryName) {
         this.categoryName = categoryName;
+    }
+
+    public String getThumbnail() {
+        return thumbnail;
+    }
+
+    public void setThumbnail(String thumbnail) {
+        this.thumbnail = thumbnail;
     }
 }

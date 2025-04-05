@@ -5,6 +5,8 @@ import com.example.common.service.ICommandService;
 import com.example.productservice.dto.ProductDTO;
 import com.example.productservice.entity.Product;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,4 +18,5 @@ public interface ProductCommandService extends ICommandService<Product> {
     Product doCreateOrUpdateProduct(ProductDTO dto, List<MultipartFile> files);
     ProductDTO retrieveById(Long id);
     List<ProductDTO> getAllProduct(String name, String code, Integer categoryId, Integer shopId);
+    Page<ProductDTO> getProductsByShopId(Long shopId, Pageable pageable);
 }

@@ -12,5 +12,6 @@ public interface FileService extends ICommandService<FileManagement> {
      String uploadSingleFile(MultipartFile multipartFile) throws BussinessException;
      List<Long> uploadMultipleFiles(List<MultipartFile> multipartFiles) throws BussinessException;
      List<FileManagement> getFilesByIds(List<Long> ids);
+     FileManagement getFileById(Long fileId);
      void deleteByIds(List<Long> ids);
 }
