@@ -20,6 +20,8 @@ services:
       - "8888:8888"
     networks:
       - app-network
+    env_file:
+      - ./docker-compose.env
   user-service:
     build:
       context: ./user-service
@@ -31,6 +33,8 @@ services:
       - "8081:8081"
     networks:
       - app-network
+    environment: 
+      - EUREKA_URL=http://eureka-server:8761/eureka 
   category-service:
     build:
       context: ./category-service
