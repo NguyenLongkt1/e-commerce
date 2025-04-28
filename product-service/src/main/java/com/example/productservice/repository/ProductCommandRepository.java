@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface ProductCommandRepository extends JpaRepository<Product,Long> {
@@ -22,4 +23,6 @@ public interface ProductCommandRepository extends JpaRepository<Product,Long> {
             select a from Product a where a.isDelete = false and (:shopId is null or a.shopId = :shopId)
         """)
     Page<Product> findByShopId(Long shopId, Pageable pageable);
+
+    List<Product> findByIdIn(Collection<Long> ids);
 }

@@ -87,6 +87,19 @@ services:
       - app-network
     env_file:
       - ./docker-compose.env
+  cart-service:
+    build:
+      context: ./cart-service
+      dockerfile: Dockerfile
+    image: cart-service:latest
+    depends_on:
+      - eureka-server
+    ports:
+      - "8086:8086"
+    networks:
+      - app-network
+    env_file:
+      - ./docker-compose.env
 
 networks:
   app-network:

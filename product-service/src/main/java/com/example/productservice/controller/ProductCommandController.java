@@ -63,4 +63,9 @@ public class ProductCommandController{
         Pageable pageable = PageRequest.of(pageIndex, pageSize);
         return ResponseEntity.ok(productCommandService.getProductsByShopId(shopId,pageable));
     }
+
+    @GetMapping("/get-by-ids")
+    public ResponseEntity<List<ProductDTO>> getProductByIds(@RequestParam(name="ids") List<Long> ids) {
+        return ResponseEntity.ok(productCommandService.getProductByIds(ids));
+    }
 }

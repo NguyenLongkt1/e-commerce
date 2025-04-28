@@ -231,7 +231,7 @@ public class ProductCommandServiceImpl implements ProductCommandService {
 
     private FileDTO getFileByIds(Long fileId) {
 
-        String url = UriComponentsBuilder.fromUriString("http://localhost:8084/storage/retrieve")
+        String url = UriComponentsBuilder.fromUriString(fileServiceUrl + "/storage/retrieve")
                 .queryParam("id", fileId)
                 .toUriString();
 
@@ -287,5 +287,22 @@ public class ProductCommandServiceImpl implements ProductCommandService {
         }
         return result;
     }
+
+    @Override
+    public List<ProductDTO> getProductByIds(List<Long> ids) {
+        return productCommandRepository.findByIdIn(ids).stream()
+                .map(product -> {
+                    ProductDTO productDTO = modelMapper.map(product, ProductDTO.class);
+                    ProductFile productFile = productFileRepository.findFirstByProductId(productDTO.getId());
+                    if(productFile != null){
+                        FileDTO fileDTO = getFileByIds(productFile.getFileId());
+                        if(fileDTO != null){
+                            productDTO.setThumbnail(fileDTO.getFilePath());
+                        }
+                    }
+                    return productDTO;
+                }).toList();
+    }
+
 
 }

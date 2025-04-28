@@ -19,4 +19,5 @@ public interface ProductCommandService extends ICommandService<Product> {
     ProductDTO retrieveById(Long id);
     List<ProductDTO> getAllProduct(String name, String code, Integer categoryId, Integer shopId);
     Page<ProductDTO> getProductsByShopId(Long shopId, Pageable pageable);
+    List<ProductDTO> getProductByIds(List<Long> ids);
 }

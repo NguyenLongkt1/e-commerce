@@ -13,6 +13,7 @@ import org.springframework.http.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.ObjectUtils;
@@ -20,13 +21,18 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class UsersServiceImpl implements IUsersService {
 
     @Value("${file-service.host}")
     private String fileServiceUrl;
+
+    @Value("${cart-service.host}")
+    private String cartServiceUrl;
 
     @Autowired
     UsersRepository usersRepository;
@@ -68,6 +74,7 @@ public class UsersServiceImpl implements IUsersService {
     }
 
     @Override
+    @Transactional
     public Users doCreateOrUpdateUser(UsersDTO dto, MultipartFile file) {
         Users user = modelMapper.map(dto, Users.class);
 
@@ -93,7 +100,9 @@ public class UsersServiceImpl implements IUsersService {
                user.setAvatar(path);
             }
 
-            return create(user);
+            Users users = create(user);
+            createCart(users.getId());
+            return users;
         }else{
             Users oldUser = retrieve(dto.getId());
             if(ObjectUtils.isEmpty(oldUser)){
@@ -146,5 +155,27 @@ public class UsersServiceImpl implements IUsersService {
     @Override
     public List<Users> getAllUser() {
         return usersRepository.findAll();
+    }
+
+    public void createCart(Long userId) {
+
+        String url = cartServiceUrl + "/api/carts";
+
+        Map<String, Object> body = new HashMap<>();
+        body.put("userId", userId);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        // Tạo request entity
+        HttpEntity<?> requestEntity = new HttpEntity<>(body, headers);
+
+        ResponseEntity<Void> response = restTemplate.exchange(
+                url,
+                HttpMethod.POST,
+                requestEntity,
+                Void.class
+        );
+        if (response.getStatusCode() != HttpStatus.OK) throw new RuntimeException("Đã có lỗi xảy ra khi tạo user");
     }
 }

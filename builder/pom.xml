@@ -23,6 +23,7 @@
         <module>../product-service</module>
         <module>../file-service</module>
         <module>../shop-service</module>
+		<module>../cart-service</module>
     </modules>
     <url/>
     <licenses>
