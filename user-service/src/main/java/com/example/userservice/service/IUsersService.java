@@ -14,4 +14,5 @@ public interface IUsersService extends ICommandService<Users> {
     Users findByUsername(String username);
 
     List<Users> getAllUser();
+    UsersDTO getUserInfo(Long id);
 }

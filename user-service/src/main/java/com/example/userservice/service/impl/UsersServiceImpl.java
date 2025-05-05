@@ -1,6 +1,7 @@
 package com.example.userservice.service.impl;
 
 import com.example.common.exception.BussinessException;
+import com.example.userservice.dto.CartDTO;
 import com.example.userservice.dto.UsersDTO;
 import com.example.userservice.entity.Users;
 import com.example.userservice.repository.RoleRepository;
@@ -20,7 +21,9 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import java.net.URI;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -67,9 +70,9 @@ public class UsersServiceImpl implements IUsersService {
     @Override
     public void delete(Long id) {
         Users user = retrieve(id);
-        if(!ObjectUtils.isEmpty(user)){
-           user.setDelete(true);
-           update(user);
+        if (!ObjectUtils.isEmpty(user)) {
+            user.setDelete(true);
+            update(user);
         }
     }
 
@@ -77,13 +80,7 @@ public class UsersServiceImpl implements IUsersService {
     @Transactional
     public Users doCreateOrUpdateUser(UsersDTO dto, MultipartFile file) {
         Users user = modelMapper.map(dto, Users.class);
-
-        Users existedUser = findByUsername(dto.getUsername());
-//        if (existedUser != null && !existedUser.getId().equals(dto.getId())) {
-//            throw new RuntimeException("User already existed");
-//        }
-
-        if(ObjectUtils.isEmpty(dto.getId())) {
+        if (ObjectUtils.isEmpty(dto.getId())) {
             PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
             String password = dto.getPassword();
             if (!StringUtils.hasLength(password)) {
@@ -96,17 +93,17 @@ public class UsersServiceImpl implements IUsersService {
             user.setDelete(false);
 
             if (!ObjectUtils.isEmpty(file)) {
-               String path = doUploadFile(file);
-               user.setAvatar(path);
+                String path = doUploadFile(file);
+                user.setAvatar(path);
             }
 
             Users users = create(user);
             createCart(users.getId());
             return users;
-        }else{
+        } else {
             Users oldUser = retrieve(dto.getId());
-            if(ObjectUtils.isEmpty(oldUser)){
-                throw new RuntimeException("Not found user with id: "+dto.getId());
+            if (ObjectUtils.isEmpty(oldUser)) {
+                throw new RuntimeException("Not found user with id: " + dto.getId());
             }
             oldUser.setFullName(user.getFullName());
             oldUser.setUsername(user.getUsername());
@@ -155,6 +152,56 @@ public class UsersServiceImpl implements IUsersService {
     @Override
     public List<Users> getAllUser() {
         return usersRepository.findAll();
+    }
+
+    UsersDTO mappingToDTO(Users user) {
+        return UsersDTO.builder()
+                .id(user.getId())
+                .fullName(user.getFullName())
+                .username(user.getUsername())
+                .phoneNumber(user.getPhoneNumber())
+                .email(user.getEmail())
+                .address(user.getAddress())
+                .birthday(user.getBirthday())
+                .gender(user.getGender())
+                .status(user.getStatus())
+                .build();
+    }
+
+    @Override
+    public UsersDTO getUserInfo(Long id) {
+        Users user = retrieve(id);
+        UsersDTO dto = null;
+        if (!ObjectUtils.isEmpty(user)) {
+            dto = mappingToDTO(user);
+            CartDTO cartDTO = callApiGetCart(user.getId());
+            if (!ObjectUtils.isEmpty(cartDTO)) {
+                dto.setCartInfo(cartDTO);
+            }
+        }
+
+        return dto;
+    }
+
+    CartDTO callApiGetCart(Long userId) {
+
+        String url = cartServiceUrl + "/api/carts/cart-by-user";
+        String urlWithParams = UriComponentsBuilder.fromUri(URI.create(url))
+                .queryParam("userId", userId)
+                .toUriString();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        HttpEntity<?> requestEntity = new HttpEntity<>(headers);
+
+        ResponseEntity<CartDTO> response = restTemplate.exchange(
+                urlWithParams,
+                HttpMethod.GET,
+                requestEntity,
+                CartDTO.class
+        );
+        return response.getBody();
     }
 
     public void createCart(Long userId) {

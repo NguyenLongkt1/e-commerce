@@ -30,6 +30,7 @@ public class UsersDTO {
     private String gender;
     private String avatar;
     private boolean isDelete;
+    private CartDTO cartInfo;
 
     public Long getId() {
         return id;
@@ -165,5 +166,13 @@ public class UsersDTO {
 
     public void setDelete(boolean delete) {
         isDelete = delete;
+    }
+
+    public CartDTO getCartInfo() {
+        return cartInfo;
+    }
+
+    public void setCartInfo(CartDTO cartInfo) {
+        this.cartInfo = cartInfo;
     }
 }
