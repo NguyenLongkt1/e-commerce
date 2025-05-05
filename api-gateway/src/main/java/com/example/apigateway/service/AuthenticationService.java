@@ -49,7 +49,7 @@ public class AuthenticationService {
         if (!authenticated)
             throw new RuntimeException("Invalid password");
 
-        var token = jwtService.generateToken(request.getUsername(), tokenExpTime);
+        var token = jwtService.generateToken(request.getUsername(), tokenExpTime, user.getId());
         return new AuthenticationResponse(token, true);
     }
 
