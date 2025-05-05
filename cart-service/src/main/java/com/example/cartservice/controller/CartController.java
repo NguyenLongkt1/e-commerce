@@ -53,4 +53,8 @@ public class CartController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("/cart-by-user")
+    public ResponseEntity<CartDTO> getCartByUserId(@RequestParam Long userId) {
+        return ResponseEntity.ok(cartService.getCartByUserId(userId));
+    }
 }

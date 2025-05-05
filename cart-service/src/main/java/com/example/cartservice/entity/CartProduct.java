@@ -16,7 +16,7 @@ public class CartProduct extends BaseEntity {
     private Long productId;
 
     @Column(name = "quantity", columnDefinition = "int default 1")
-    private Integer quantity = 1;
+    private Integer quantity;
 
     public Long getCartId() {
         return cartId;
