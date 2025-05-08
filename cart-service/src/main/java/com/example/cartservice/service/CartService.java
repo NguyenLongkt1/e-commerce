@@ -14,4 +14,5 @@ public interface CartService extends ICommandService<Cart> {
     void removeProductFromCart(CartDTO cartDTO);
     List<ProductDTO> getAllProductsInCart(Long cartId);
     Integer getAmountOfProductsInCart(Long cartId);
+    CartDTO getCartByUserId(Long userId);
 }

@@ -66,15 +66,16 @@ public class JwtService {
     }
 
 
-    public String generateToken(String userName, Long expTime) {
+    public String generateToken(String userName, Long expTime, Long userId) {
         Map<String, Object> claims = new HashMap<>();
-        return createToken(claims, userName, expTime);
+        return createToken(claims, userName, expTime, userId);
     }
 
-    private String createToken(Map<String, Object> claims, String username, Long expTime) {
+    private String createToken(Map<String, Object> claims, String username, Long expTime, Long userId) {
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(username)
+                .claim("userId",userId)
                 .setIssuer("api-gateway")
                 .setIssuedAt(new Date())
                 .setId(UUID.randomUUID().toString())

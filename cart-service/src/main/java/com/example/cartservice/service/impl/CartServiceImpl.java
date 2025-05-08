@@ -17,6 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -77,6 +78,7 @@ public class CartServiceImpl implements CartService {
         CartProduct cartProduct = new CartProduct();
         cartProduct.setCartId(cartDTO.getCartId());
         cartProduct.setProductId(cartDTO.getProductId());
+        cartProduct.setQuantity(cartDTO.getQuantity());
         cartProductRepository.save(cartProduct);
     }
 
@@ -117,6 +119,20 @@ public class CartServiceImpl implements CartService {
     @Override
     public Integer getAmountOfProductsInCart(Long cartId) {
         return cartProductRepository.getAmountOfProductsInCart(cartId);
+    }
+
+    @Override
+    public CartDTO getCartByUserId(Long userId) {
+        CartDTO cartDTO = null;
+        if(!ObjectUtils.isEmpty(userId)){
+            Cart cart = cartRepository.findByUserId(userId);
+            if(cart!=null){
+                cartDTO = modelMapper.map(cart, CartDTO.class);
+                int totalQuantity = cartProductRepository.getAmountOfProductsInCart(cart.getId());
+                cartDTO.setTotalQuantity(totalQuantity);
+            }
+        }
+        return cartDTO;
     }
 
     private List<ProductDTO> getProductsInfo(List<Long> productIds) {

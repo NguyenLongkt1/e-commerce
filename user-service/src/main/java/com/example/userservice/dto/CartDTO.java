@@ -1,4 +1,4 @@
-package com.example.cartservice.dto;
+package com.example.userservice.dto;
 
 import java.util.List;
 
@@ -7,8 +7,8 @@ public class CartDTO {
     private Long productId;
     private Long cartId;
     private Integer quantity;
-    private Integer totalQuantity;
     private List<Long> productIds;
+    private Integer totalQuantity;
 
     public Long getUserId() {
         return userId;
