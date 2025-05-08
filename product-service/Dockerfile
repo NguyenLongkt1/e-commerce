@@ -1,10 +1,11 @@
-FROM common-service:latest
-LABEL Name=product-service Version=1.0.0 
-
-# Container configuration
-RUN mkdir -p /app/product-service
-COPY . /app/product-service
+FROM common-service:latest as builder
 WORKDIR /app/product-service
-RUN mvn clean package -DskipTests=true 
+COPY . .
+RUN mvn clean package -DskipTests=true
+
+FROM eclipse-temurin:17-jdk-jammy
+WORKDIR /app
+COPY --from=builder /app/product-service/target/product-service-0.0.1-SNAPSHOT.jar product-service.jar
+
 EXPOSE 8083
-CMD ["java", "-jar", "target/product-service-0.0.1-SNAPSHOT.jar"]
+CMD ["java", "-jar", "product-service.jar"]
