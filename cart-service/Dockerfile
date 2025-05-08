@@ -1,10 +1,11 @@
-FROM common-service:latest
-LABEL Name=cart-service Version=1.0.0
-
-# Container configuration
-RUN mkdir -p /app/cart-service
-COPY . /app/cart-service
+FROM common-service:latest as builder
 WORKDIR /app/cart-service
-RUN mvn clean package -DskipTests=true 
+COPY . .
+RUN mvn clean package -DskipTests=true
+
+FROM eclipse-temurin:17-jdk-jammy
+WORKDIR /app
+COPY --from=builder /app/cart-service/target/cart-service-0.0.1-SNAPSHOT.jar cart-service.jar
+
 EXPOSE 8086
-CMD ["java", "-jar", "target/cart-service-0.0.1-SNAPSHOT.jar"]
+CMD ["java", "-jar", "cart-service.jar"]
