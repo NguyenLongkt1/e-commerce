@@ -1,10 +1,11 @@
-FROM common-service:latest
-LABEL Name=category-service Version=1.0.0 
-
-# Container configuration
-RUN mkdir -p /app/category-service
-COPY . /app/category-service
+FROM common-service:latest as builder
 WORKDIR /app/category-service
-RUN mvn clean package -DskipTests=true 
+COPY . .
+RUN mvn clean package -DskipTests=true
+
+FROM eclipse-temurin:17-jdk-jammy
+WORKDIR /app
+COPY --from=builder /app/category-service/target/category-service-0.0.1-SNAPSHOT.jar category-service.jar
+
 EXPOSE 8082
-CMD ["java", "-jar", "target/category-service-0.0.1-SNAPSHOT.jar"]
+CMD ["java", "-jar", "category-service.jar"]

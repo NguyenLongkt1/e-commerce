@@ -1,10 +1,11 @@
-FROM common-service:latest
-LABEL Name=file-service Version=1.0.0 
-
-# Container configuration
-RUN mkdir -p /app/file-service
-COPY . /app/file-service
+FROM common-service:latest as builder
 WORKDIR /app/file-service
-RUN mvn clean package -DskipTests=true 
+COPY . .
+RUN mvn clean package -DskipTests=true
+
+FROM eclipse-temurin:17-jdk-jammy
+WORKDIR /app
+COPY --from=builder /app/file-service/target/file-service-0.0.1-SNAPSHOT.jar file-service.jar
+
 EXPOSE 8084
-CMD ["java", "-jar", "target/file-service-0.0.1-SNAPSHOT.jar"]
+CMD ["java", "-jar", "file-service.jar"]

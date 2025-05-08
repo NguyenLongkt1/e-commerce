@@ -1,10 +1,11 @@
-FROM common-service:latest
-LABEL Name=shop-service Version=1.0.0 
-
-# Container configuration
-RUN mkdir -p /app/shop-service
-COPY . /app/shop-service
+FROM common-service:latest as builder
 WORKDIR /app/shop-service
-RUN mvn clean package -DskipTests=true 
+COPY . .
+RUN mvn clean package -DskipTests=true
+
+FROM eclipse-temurin:17-jdk-jammy
+WORKDIR /app
+COPY --from=builder /app/shop-service/target/shop-service-0.0.1-SNAPSHOT.jar shop-service.jar
+
 EXPOSE 8085
-CMD ["java", "-jar", "target/shop-service-0.0.1-SNAPSHOT.jar"]
+CMD ["java", "-jar", "shop-service.jar"]

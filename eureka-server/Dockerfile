@@ -1,10 +1,11 @@
-FROM common-service:latest
-LABEL Name=eureka-server Version=1.0.0 
-
-# Container configuration
-RUN mkdir -p /app/eureka-server
-COPY . /app/eureka-server
+FROM common-service:latest as builder
 WORKDIR /app/eureka-server
-RUN mvn clean package -DskipTests=true 
+COPY . .
+RUN mvn clean package -DskipTests=true
+
+FROM eclipse-temurin:17-jdk-jammy
+WORKDIR /app
+COPY --from=builder /app/eureka-server/target/eureka-server-0.0.1-SNAPSHOT.jar eureka-server.jar
+
 EXPOSE 8761
-CMD ["java", "-jar", "target/eureka-server-0.0.1-SNAPSHOT.jar"]
+CMD ["java", "-jar", "eureka-server.jar"]
